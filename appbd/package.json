@@ -4,6 +4,8 @@
   "description": "integrar com mysql",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
+    "dev": "nodemon dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Milene",

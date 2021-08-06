@@ -2,6 +2,6 @@
 
 referência: https://nodejs.org/en/about/
 
-## Terminal exc-1.3> node index.js
+## Terminal excicio1> node index.js
 
 http://127.0.0.1:3000/

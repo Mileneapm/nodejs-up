@@ -1,58 +1,32 @@
-var motoristas = Array();
+var request = require('request')
+var pedidoDataBase = require('../dataBase/pedido.dataBase')()
 
-app.get('/motorista/lista', (req, res) => {
-    res.status(200).json(motoristas);
-})
+module.exports = () => {
 
-app.get('/motorista/mediaidade', (req, res) => {
-  const mediaIdade = motoristas.reduce( function (valorIdade, item) {
-    return parseInt(valorIdade) + parseISnt(item.idade);
-  }, 0)
-  numCadastros = motoristas.length;
-  media = mediaIdade / numCadastros;
-  res.status(200).json("Media da idade dos motoristas = " + media);
-})
+  const controller = {}
 
-app.get('/motorista', (req, res) => {
-  var nome = req.query.nome;
+  controller.listar = (req, res) => {
 
-  const motoristaFiltro = motoristas.filter( function (item, index) {
-    return item.nome === nome;
-  })
-    res.status(200).json(motoristaFiltro);
-})
-  
-app.post('/motorista', (req, res) => {
-    const motorista = req.body;
-    motoristas.push(motorista);
-
-    console.log("\nMotorista:\n", motoristas);
-    res.send('Motorista adicionado com sucesso');
-  })
-
-app.put('/motorista', (req, res) => {
-    const motorista = req.body;
-
-    motoristas = motoristas.map( function (item) {
-      if (motorista.id === item.id) {
-        return motorista;
-      }
-      return item;
+    pedidoDataBase.listar((pedidos) => {
+      console.log(pedidos)
+      
+      res.status(200).send('retorno')
     })
+  }
 
-    console.log(motoristas);
+  controller.salvar = (req, res) => {
+    const pedido = req.body;    
+    pedidoDataBase.salvar(pedido);
 
-    res.send('Cadastro motorista alterado com sucesso!');
-})
+   res.send('Usuário cadastrado com sucesso!')
+  }
 
-app.delete('/motorista/:id', (req, res) => {
-  const { id } = req.params;
-  const motorista = motoristas.findIndex(p => p.id == id);
-  
-  motoristas.splice(motorista, 1); 
-  return res.send('Cadastro motorista deletado com sucesso!');
- });
+  controller.alterar = (req, res) => {
+  }
 
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`)
-})
+  controller.excluir = (req, res) => {
+    res.send('Usuário excluído com sucesso!')
+  }
+
+  return controller
+}

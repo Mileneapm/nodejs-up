@@ -16,7 +16,7 @@ module.exports = () => {
 
   controller.salvar = (req, res) => {
     const cliente = req.body;    
-    usuarioRep.salvar(cliente);
+    clienteDataBase.salvar(cliente);
 
    res.send('Usuário cadastrado com sucesso!')
   }

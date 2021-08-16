@@ -4,61 +4,79 @@ module.exports = () => {
 
     const repository = {}
 
-    function conectar () {
+    function conectar (callback) {
         var connection = mysql.createConnection({
-            host: 'localhost',
+            host: 'localhost:8080',
             user: 'root',
             password: '',
-            database: 'garcON'
+            database: 'garcon'
         });
 
         connection.connect(function (err) {
             if (err) {
-                console.error('error connecting: ' + err.stack);
-                return;
+                return callback(connection, err)
             }
-
-            console.log('connected as id ' + connection.threadId);
+            return callback(connection, err);;
         });
-
-        return connection;
     }
 
-    repository.listar = () => {
-        const connection = conectar()
-        connection.query('SELECT * FROM USUARIO', function (err, rows) {
+    repository.listar = (callback) => {
+        conectar((connection, err) => {
+            if (err) {
+                const error = new Error()
+                error.message = "Não foi possível conectar ao banco de dados"
+                error.httpStatusCode = 500
+                error.code = 'ERR003'
+                return callback(null, error)
+            }
+        connection.query('SELECT * FROM CLIENTE', function (err, rows) {
             if (err) {
                 console.log(err)
                 return;
             }
-
-           /* usuarios = rows.map(function(item) {
-                if (user.id === item.id) {
-                    item.login = user.login;
-                }
-                return item;        
-            }) */
-
-            console.log(rows)
-
-            return rows
+                return callback(rows)
+            })
         })
     }
     
-    repository.salvar = (usuario) => {
+    repository.salvar = (cliente, callback) => {
+        conectar((connection, err) => {
+            if (err) {
+                const error = new Error()
+                error.message = "Não foi possível conectar ao banco de dados"
+                error.httpStatusCode = 500
+                error.code = 'ERR005'
+                    return callback(null, error)
+            }
+        
+        connection.query('INSERT INTO CLIENTE SET ?', cliente, function (err, res) {
+            if (err) {
+                const error = new Error()
+                    error.message = "Erro ao inserir o usuário"
+                    error.httpStatusCode = 500
+                    error.code = 'ERR003'
+                    return callback(null, error)
+                }
+                
+                cliente.id = res.insertId
+                connection.end();
+                return callback(cliente, null)
+            })
+        })
+    }
+
+    repository.excluir = (id) => {
         const connection = conectar()
-        connection.query('INSERT INTO USUARIO SET ?', usuario, function (err, res) {
+        connection.query('DELETE FROM CLIENTE WHERE ID = ?', [id], function (err, res) {
             if (err) {
                 console.log(err)
                 return;
             }
-    
-            console.log(`inseriu... ${res.insertId}`)
+            console.log(`excluir... ${res.affectedRows}`)
         })
     }
 
     return repository
-
 }
 
 /**

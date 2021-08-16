@@ -12,7 +12,7 @@ module.exports = () => {
         if (err) {
           return callback(err)
       }        
-      res.status(200).json(usuarios)
+      res.status(200).json(cliente)
       })
     }
 
@@ -35,6 +35,7 @@ module.exports = () => {
 
     controller.excluir = (req, res) => {
       const id = req.params.id
+      
       clienteDataBase.excluir(id);
 
       res.send('Usuário excluído com sucesso!')

@@ -6,7 +6,8 @@ module.exports = () => {
 
     function conectar (callback) {
         var connection = mysql.createConnection({
-            host: 'localhost:8080',
+            host: 'localhost',
+            //port: '8080',
             user: 'root',
             password: '',
             database: 'garcon'
@@ -52,7 +53,7 @@ module.exports = () => {
         connection.query('INSERT INTO CLIENTE SET ?', cliente, function (err, res) {
             if (err) {
                 const error = new Error()
-                    error.message = "Erro ao inserir o usuário"
+                    error.message = "Erro ao inserir o cliente"
                     error.httpStatusCode = 500
                     error.code = 'ERR003'
                     return callback(null, error)
@@ -65,7 +66,7 @@ module.exports = () => {
         })
     }
 
-    repository.excluir = (id) => {
+    repository.excluir = (id, callback) => {
         const connection = conectar()
         connection.query('DELETE FROM CLIENTE WHERE ID = ?', [id], function (err, res) {
             if (err) {
@@ -73,6 +74,7 @@ module.exports = () => {
                 return;
             }
             console.log(`excluir... ${res.affectedRows}`)
+            return callback(id)
         })
     }
 

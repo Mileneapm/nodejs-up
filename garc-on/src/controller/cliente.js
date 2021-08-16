@@ -1,32 +1,44 @@
-var request = require('request')
+//var request = require('request')
+
 var clienteDataBase = require('../dataBase/cliente.dataBase')()
 
 module.exports = () => {
 
   const controller = {}
 
-  controller.listar = (req, res) => {
+    controller.listar = (req, res, callback) => {
 
-    clienteDataBase.listar((clientes) => {
-      console.log(clientes)
+      clienteDataBase.listar((cliente, err) => {
+        if (err) {
+          return callback(err)
+      }        
+      res.status(200).json(usuarios)
+      })
+    }
+
+    controller.salvar = (req, res, callback) => {
+      const clienteDados = req.body;   
       
-      res.status(200).send('retorno')
-    })
-  }
+      if (!clienteDados.cep) {            
+        throw {httpStatusCode: 400, code: 'ERR001', message: 'cep é obrigatório'};
+    }
+      
+      clienteDataBase.salvar(clienteDados, (cliente, err) => {      
+          if (err) {
+              return callback(err)
+          }         
+        res.json(cliente)
+      });
+    }
 
-  controller.salvar = (req, res) => {
-    const cliente = req.body;    
-    clienteDataBase.salvar(cliente);
+    controller.alterar = (req, res) => {}
 
-   res.send('Usuário cadastrado com sucesso!')
-  }
+    controller.excluir = (req, res) => {
+      const id = req.params.id
+      clienteDataBase.excluir(id);
 
-  controller.alterar = (req, res) => {
-  }
-
-  controller.excluir = (req, res) => {
-    res.send('Usuário excluído com sucesso!')
-  }
+      res.send('Usuário excluído com sucesso!')
+    }
 
   return controller
 }

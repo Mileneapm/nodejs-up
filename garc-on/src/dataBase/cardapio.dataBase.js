@@ -71,7 +71,7 @@ module.exports = () => {
             if (err) {
                 return
             }
-        connection.query('DELETE FROM CARDAPIO WHERE ID = ?', [id], function (err, rows) {
+        connection.query('DELETE FROM CARDAPIO WHERE CARDAPIO_ID = ?', [id], function (err, rows) {
             if (err) {
                 return
             }

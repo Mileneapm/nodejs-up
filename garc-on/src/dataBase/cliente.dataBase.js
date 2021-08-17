@@ -72,7 +72,7 @@ module.exports = () => {
                 console.log(err)
                 return
             }
-        connection.query('DELETE FROM CLIENTE WHERE ID = ?', [id], function (err, rows) {
+        connection.query('DELETE FROM CLIENTE WHERE CLIENTE_ID = ?', [id], function (err, rows) {
             if (err) {
                 console.log(err)
                 return

@@ -4,69 +4,61 @@ module.exports = () => {
 
     const repository = {}
 
-    function conectar () {
+    function conectar (callback) {
         var connection = mysql.createConnection({
             host: 'localhost',
+            port: '3306',
             user: 'root',
             password: '',
-            database: 'garcON'
+            database: 'garcon'
         });
 
         connection.connect(function (err) {
             if (err) {
-                console.error('error connecting: ' + err.stack);
-                return;
+                return callback(connection, err)
             }
-
-            console.log('connected as id ' + connection.threadId);
+            return callback(connection, err);
         });
-
-        return connection;
     }
 
-    repository.listar = () => {
-        const connection = conectar()
-        connection.query('SELECT * FROM USUARIO', function (err, rows) {
-            if (err) {
-                console.log(err)
-                return;
+     repository.listar = (id, callback) => {
+        conectar((connection, err) => {
+        connection.query('SELECT SUM(VALOR) as TOTAL_ from pedido p inner join cardapio c where p.CLIENTE_ID = ? and p.CARDAPIO_ID = c.CARDAPIO_ID ',[id], function (erro, rows) { 
+            if (erro) {
+                console.log(erro)
+                return
             }
+            return callback(rows)
+            })
+        })
+    }
+    
+    //select * from pedido p inner join cardapio c where p.CLIENTE_ID = ? and p.CARDAPIO_ID = c.CARDAPIO_ID 
 
-           /* usuarios = rows.map(function(item) {
-                if (user.id === item.id) {
-                    item.login = user.login;
+    repository.salvar = (pedido, callback) => {
+        conectar((connection, err) => {
+            if (err) {
+                const error = new Error()
+                error.message = "Não foi possível conectar ao banco de dados"
+                error.httpStatusCode = 500
+                error.code = 'ERR005'
+                    return callback(null, error)
+            }
+        
+        connection.query('INSERT INTO PEDIDO SET ?', pedido, function (err, res) {
+            if (err) {
+                const error = new Error()
+                    error.message = "Erro ao inserir o pedido"
+                    error.httpStatusCode = 500
+                    error.code = 'ERR003'
+                    return callback(null, error)
                 }
-                return item;        
-            }) */
-
-            console.log(rows)
-
-            return rows
+                
+                pedido.id = res.insertId
+                connection.end();
+                return callback(pedido, null)
+            })
         })
     }
-    
-    repository.salvar = (usuario) => {
-        const connection = conectar()
-        connection.query('INSERT INTO USUARIO SET ?', usuario, function (err, res) {
-            if (err) {
-                console.log(err)
-                return;
-            }
-    
-            console.log(`inseriu... ${res.insertId}`)
-        })
-    }
-
     return repository
-
 }
-
-/**
- * CREATE TABLE CLIENTE (
-        ID INTEGER PRIMARY KEY AUTO_INCREMENT,
-        NOME VARCHAR(255),
-        CPF VARCHAR (11),
-        CEP VARCHAR(8)
-        );
-
- */

@@ -1,32 +1,28 @@
-var request = require('request')
 var pedidoDataBase = require('../dataBase/pedido.dataBase')()
 
 module.exports = () => {
 
   const controller = {}
 
-  controller.listar = (req, res) => {
+    controller.listar = (req, res, callback) => {
 
-    pedidoDataBase.listar((pedidos) => {
-      console.log(pedidos)
-      
-      res.status(200).send('retorno')
-    })
-  }
+      const id = req.params.id
 
-  controller.salvar = (req, res) => {
-    const pedido = req.body;    
-    pedidoDataBase.salvar(pedido);
+      pedidoDataBase.listar(id, (callback) => {
+  
+      res.status(200).json(callback)
+      })
+    }
 
-   res.send('Usuário cadastrado com sucesso!')
-  }
+    controller.salvar = (req, res, callback) => {
+      const pedidoDados = req.body;
+      pedidoDataBase.salvar(pedidoDados, (pedido, err) => {      
+          if (err) {
+              return callback(err)
+           }         
+        res.json(pedido)
+      });
+    }
 
-  controller.alterar = (req, res) => {
-  }
-
-  controller.excluir = (req, res) => {
-    res.send('Usuário excluído com sucesso!')
-  }
-
-  return controller
+    return controller
 }

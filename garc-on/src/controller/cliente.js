@@ -21,25 +21,24 @@ module.exports = () => {
       
       if (!clienteDados.cep) {            
         throw {httpStatusCode: 400, code: 'ERR001', message: 'cep é obrigatório'};
-    }
+      }
       
       clienteDataBase.salvar(clienteDados, (cliente, err) => {      
           if (err) {
               return callback(err)
-          }         
+           }         
         res.json(cliente)
       });
     }
 
-    controller.alterar = (req, res) => {}
-
     controller.excluir = (req, res) => {
       const id = req.params.id
-      
-      clienteDataBase.excluir(id);
+      clienteDataBase.excluir(id)
 
       res.send('Usuário excluído com sucesso!')
     }
+
+    controller.alterar = (req, res) => {}
 
   return controller
 }

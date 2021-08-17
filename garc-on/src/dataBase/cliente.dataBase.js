@@ -7,7 +7,7 @@ module.exports = () => {
     function conectar (callback) {
         var connection = mysql.createConnection({
             host: 'localhost',
-            //port: '8080',
+            port: '3306',
             user: 'root',
             password: '',
             database: 'garcon'
@@ -66,18 +66,22 @@ module.exports = () => {
         })
     }
 
-    repository.excluir = (id, callback) => {
-        const connection = conectar()
-        connection.query('DELETE FROM CLIENTE WHERE ID = ?', [id], function (err, res) {
+    repository.excluir = (id) => {
+        conectar((connection, err) => {
             if (err) {
                 console.log(err)
-                return;
+                return
             }
-            console.log(`excluir... ${res.affectedRows}`)
-            return callback(id)
+        connection.query('DELETE FROM CLIENTE WHERE ID = ?', [id], function (err, rows) {
+            if (err) {
+                console.log(err)
+                return
+            }
+                return
+            })
         })
     }
-
+    
     return repository
 }
 

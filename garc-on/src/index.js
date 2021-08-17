@@ -1,13 +1,23 @@
-const express = require('express');
+const express = require('express')
+const yaml = require('js-yaml')
+const fs = require('fs')
 
-const app = express()
-const port = 9000
+  try {
+    let fileContents = fs.readFileSync('./config/host.yaml', 'utf8');
+    data = yaml.load(fileContents);
+      } catch (e) {
+        console.log(e);
+  }
 
-app.use(express.json());  
+  const app = express()
+  const port = data['port']
 
-const routing = require('./routes/routing');
-app.use(routing) 
+  app.use(express.json())
 
-app.listen(port, () => {
-  console.log(`http://localhost:${port}`)
-})
+  const routing = require('./routes/routing')
+
+  app.use(routing) 
+
+  app.listen(port, () => {
+    console.log(`http://localhost:${port}`)
+  })

@@ -17,7 +17,6 @@ routing.put('/cliente', clienteController.alterar)
 routing.delete('/cliente/:id', clienteController.excluir)
 
 routing.get('/pedido/:id', pedidoController.listar)
-routing.get('/pedido', pedidoController.listar)
 routing.post('/pedido', pedidoController.salvar)
 
 module.exports = routing

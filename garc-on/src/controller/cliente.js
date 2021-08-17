@@ -1,5 +1,3 @@
-//var request = require('request')
-
 var clienteDataBase = require('../dataBase/cliente.dataBase')()
 
 module.exports = () => {
@@ -35,7 +33,7 @@ module.exports = () => {
       const id = req.params.id
       clienteDataBase.excluir(id)
 
-      res.send('Usuário excluído com sucesso!')
+      res.send('Cliente excluído com sucesso!')
     }
 
     controller.alterar = (req, res) => {}

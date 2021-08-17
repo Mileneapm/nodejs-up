@@ -17,7 +17,7 @@ module.exports = () => {
             if (err) {
                 return callback(connection, err)
             }
-            return callback(connection, err);;
+            return callback(connection, err);
         });
     }
 
@@ -81,17 +81,6 @@ module.exports = () => {
             })
         })
     }
-    
+
     return repository
 }
-
-/**
- * CREATE TABLE CLIENTE (
-        ID INTEGER PRIMARY KEY AUTO_INCREMENT,
-        NOME VARCHAR(255),
-        CPF VARCHAR (11),
-        CEP VARCHAR(8)
-        );
-
- */
-    
